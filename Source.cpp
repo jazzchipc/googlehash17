@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -56,8 +57,18 @@ bool getData(vector<int> &videos) {
 	return false;	
 }
 
+class Endpoint {
+	map <int, int> video_requests;	// key = video, value = requests
+	map <int, int> latencies;	// key = server, value = latencies
+	int data_center_latency;
+};
+
+class CacheServer {
+	int* videos_stored; // videos stored on the server
+	int free_space;
+};
+
 int main() {
-	//cout << "ola";
 	vector<int> videos;
 	getData(videos);
 	cout << videos.size();
