@@ -247,6 +247,9 @@ int main() {
 
 		cout << "Max = " << maxCacheIndex << endl;
 
+		int aux = caches[maxCacheIndex].free_space - videos[i]->size;
+		if (aux < 0)
+			continue;
 		caches[maxCacheIndex].free_space -= videos[i]->size;
 		caches[maxCacheIndex].videos_stored.push_back(*videos[i]);
 	}
