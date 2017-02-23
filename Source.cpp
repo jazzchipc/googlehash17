@@ -57,7 +57,6 @@ bool getData(vector<Video *> &videos, vector<Endpoint *> &endpoints, CacheData *
 		int i_cacheSize = atoi(info.substr(0, info.find(" ")).c_str());
 		cacheData->cacheSize = i_cacheSize;
 		cacheData->numCaches = i_caches;
-		cout << i_cacheSize << ", " << i_caches << endl;
 
 		// Get videos sizes
 		getline(file, info);
@@ -165,13 +164,6 @@ int main() {
 	vector<CacheServer> caches;
 	CacheData *cacheData = new CacheData;
 
-	for (int i = 0; i < cacheData->numCaches; i++) {
-		CacheServer cacheServer;
-		cacheServer.storage = cacheData->cacheSize;
-		caches.push_back(cacheServer);
-		cout << "Ola";
-	}
-
 	/*Video v1;
 	v1.size = 50;
 	v1.id = 3;
@@ -195,6 +187,12 @@ int main() {
 	caches.push_back(cs2);*/
 
 	getData(videos, endpoints, cacheData);
+
+	for (int i = 0; i < cacheData->numCaches; i++) {
+		CacheServer cacheServer;
+		cacheServer.storage = cacheData->cacheSize;
+		caches.push_back(cacheServer);
+	}
 
 	for (int i = 0; i < videos.size(); i++) {
 		cout << "1";
@@ -228,12 +226,14 @@ int main() {
 				sumRequests += endPRequests[k];
 			}
 
+			if (sumLatencies == 0 || sumRequests == 0)
+				continue;
 			int w = sumLatencies / sumRequests;
 			infoCache.insert(pair<int, int>(j, w));
 		}
 
 		/*Selects the best cache for a particular video*/
-		int maxCacheIndex;
+		int maxCacheIndex = 0;
 		int maxTimeSaved = 0;
 		int index = 0;
 		map<int, int>::iterator it;
@@ -245,7 +245,7 @@ int main() {
 			index++;
 		}
 
-		cout << maxCacheIndex;
+		cout << "Max = " << maxCacheIndex << endl;
 
 		caches[maxCacheIndex].free_space -= videos[i]->size;
 		caches[maxCacheIndex].videos_stored.push_back(*videos[i]);
@@ -253,7 +253,7 @@ int main() {
 
 	for (int i = 0; i < caches.size(); i++) {
 		for (int j = 0; j < caches[i].videos_stored.size(); j++)
-			cout << caches[i].videos_stored[j].id;
+			cout << "Cache " << i << " com video : " << caches[i].videos_stored[j].id << endl;
 	}
 
 		//getData(videos);
