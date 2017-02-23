@@ -7,34 +7,7 @@
 
 using namespace std;
 
-class Endpoint;
-class Video;
-class CacheServer;
-
-class Endpoint {
-public:
-	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
-	map <int, int> latencies;	// key = server, value = latencies
-	int data_center_latency;
-};
-
-class CacheServer {
-public:
-	vector<Video> videos_stored; // videos stored on the server
-	int free_space;
-	int storage;
-};
-
-class Video {
-public:
-	int id;
-	int size;
-	int currSavedTime = 0;
-	CacheServer* cs;
-	Endpoint* endP;
-};
-
-bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
+/*bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 	ifstream file;
 	file.open("me_at_the_zoo.in");
 	if (file.is_open()) {
@@ -146,13 +119,39 @@ int outputResults(vector <CacheServer> cacheServers) {
 	file.close();
 
 	return 0;
-}
+}*/
+
+class Endpoint;
+class CacheServer;
+class Video;
+
+class Endpoint {
+public:
+	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
+	map <int, int> latencies;	// key = server, value = latencies
+	int data_center_latency;
+};
+
+class CacheServer {
+public:
+	vector<Video> videos_stored; // videos stored on the server
+	int free_space;
+	int storage;
+};
+
+class Video {
+public:
+	int id;
+	int size;
+	int currSavedTime = 0;
+};
 
 int main() {
 
 	vector<Video> videos;
-	Video v1, v2, v3, v4, v5;
+	Video v1;
 	v1.size = 50;
+	v1.id = 3;
 
 	vector<Endpoint> endpoints;
 	Endpoint endP1, endP2, endP4;
@@ -199,9 +198,28 @@ int main() {
 			int w = sumLatencies / sumRequests;
 			infoCache.insert(pair<int, int>(j, w));
 		}
+
+		/*Selects the best cache for a particular video*/
+		int maxCacheIndex;
+		int maxTimeSaved = 0;
+		int index = 0;
+		map<int, int>::iterator it;
+		for (it = infoCache.begin(); it != infoCache.end(); it++) {
+			if (it->second > maxTimeSaved) {
+				maxTimeSaved = it->second;
+				maxCacheIndex = index;
+			}
+			index++;
+		}
+
+		caches[maxCacheIndex].free_space -= videos[i].size;
+		caches[maxCacheIndex].videos_stored.push_back(videos[i]);
 	}
 
-
+	for (int i = 0; i < caches.size(); i++) {
+		for (int j = 0; j < caches[i].videos_stored.size(); j++)
+			cout << caches[i].videos_stored[j].id;
+	}
 
 		//getData(videos);
 		//cout << videos.size();
