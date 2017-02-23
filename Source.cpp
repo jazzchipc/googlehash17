@@ -152,9 +152,13 @@ int main() {
 	Video v1;
 	v1.size = 50;
 	v1.id = 3;
+	videos.push_back(v1);
 
 	vector<Endpoint> endpoints;
 	Endpoint endP1, endP2, endP4;
+	endpoints.push_back(endP1);
+	endpoints.push_back(endP2);
+	endpoints.push_back(endP4);
 
 	endP1.video_requests.insert(pair<int, int>(3, 1500));
 	endP2.video_requests.insert(pair<int, int>(3, 2500));
@@ -164,13 +168,17 @@ int main() {
 	CacheServer cs1, cs2;
 	cs1.storage = 100;
 	cs1.videos_stored.push_back(v1);
+	caches.push_back(cs1);
+	caches.push_back(cs2);
 
 	for (int i = 0; i < videos.size(); i++) {
+		cout << "1";
 		map<int, int> infoCache;		// Info for the comparison of caches.
 
 		for (int j = 0; j < caches.size(); j++) {
 			vector<int> endPVideoSum;
 			vector<int> endPRequests;
+			cout << "2";
 
 			for (int k = 0; k < endpoints.size(); k++) {
 				map<int, int>::iterator it;
@@ -211,6 +219,8 @@ int main() {
 			}
 			index++;
 		}
+
+		cout << maxCacheIndex;
 
 		caches[maxCacheIndex].free_space -= videos[i].size;
 		caches[maxCacheIndex].videos_stored.push_back(videos[i]);
