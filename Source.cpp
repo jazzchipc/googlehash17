@@ -5,7 +5,34 @@
 #include <vector>
 #include <map>
 
+class Video;
+class CacheServer;
+class Endpoint;
+
 using namespace std;
+
+class Video {
+public:
+	int id;
+	int size;
+	int currSavedTime = 0;
+	CacheServer* cs;
+	Endpoint* endP;
+};
+
+class CacheServer {
+public:
+	vector<Video> videos_stored; // videos stored on the server
+	int free_space;
+	int storage;
+};
+
+class Endpoint {
+public:
+	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
+	map <CacheServer, int> latencies;	// key = server, value = latencies
+	int data_center_latency;
+};
 
 bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 	ifstream file;
@@ -120,28 +147,6 @@ int outputResults(vector <CacheServer> cacheServers) {
 
 	return 0;
 }
-
-class Endpoint {
-public:
-	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
-	map <CacheServer, int> latencies;	// key = server, value = latencies
-	int data_center_latency;
-};
-
-class CacheServer {
-public:
-	vector<Video> videos_stored; // videos stored on the server
-	int free_space;
-	int storage;
-};
-
-class Video {
-public:
-	int size;
-	int currSavedTime = 0;
-	CacheServer* cs;
-	Endpoint* endP;
-};
 
 int main() {
 	
