@@ -7,7 +7,32 @@
 
 using namespace std;
 
-/*bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
+class Endpoint;
+class CacheServer;
+class Video;
+
+class Endpoint {
+public:
+	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
+	map <int, int> latencies;	// key = server, value = latencies
+	int data_center_latency;
+};
+
+class CacheServer {
+public:
+	vector<Video> videos_stored; // videos stored on the server
+	int free_space;
+	int storage;
+};
+
+class Video {
+public:
+	int id;
+	int size;
+	int currSavedTime = 0;
+};
+
+bool getData(vector<Video *> &videos, vector<Endpoint *> &endpoints) {
 	ifstream file;
 	file.open("me_at_the_zoo.in");
 	if (file.is_open()) {
@@ -28,7 +53,11 @@ using namespace std;
 		// Get videos sizes
 		getline(file, info);
 		for (int i = 0; i < i_videos; i++) {
-			videos.push_back(atoi(info.substr(0, info.find(" ")).c_str()));
+			int videoSize = atoi(info.substr(0, info.find(" ")).c_str());
+			Video *video = new Video;
+			video->id = i;
+			video->size = videoSize;
+			videos.push_back(video);
 			if (i < i_videos + 1)
 				info = info.substr(info.find(" ") + 1);
 		}
@@ -64,7 +93,6 @@ using namespace std;
 			int numRequests = atoi(info.substr(0, info.find(" ")).c_str());
 			Endpoint *endpoint = endpoints.at(endpointIdx);
 			endpoint->video_requests.insert(*(new pair<int, int>(videoIdx, numRequests)));
-			//cout << endpointIdx << " " << videoIdx << " " << numRequests << endl;
 		}
 
 		file.close();
@@ -72,7 +100,7 @@ using namespace std;
 	}
 	return false;
 }
-
+/*
 int printCacheServerVideos(CacheServer server, ofstream& output)
 {
 	for (size_t i = 0; i < server.videos_stored.size(); i++)
@@ -120,31 +148,6 @@ int outputResults(vector <CacheServer> cacheServers) {
 
 	return 0;
 }*/
-
-class Endpoint;
-class CacheServer;
-class Video;
-
-class Endpoint {
-public:
-	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
-	map <int, int> latencies;	// key = server, value = latencies
-	int data_center_latency;
-};
-
-class CacheServer {
-public:
-	vector<Video> videos_stored; // videos stored on the server
-	int free_space;
-	int storage;
-};
-
-class Video {
-public:
-	int id;
-	int size;
-	int currSavedTime = 0;
-};
 
 int main() {
 
