@@ -124,7 +124,7 @@ int outputResults(vector <CacheServer> cacheServers) {
 class Endpoint {
 public:
 	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
-	map <CacheServer, int> latencies;	// key = server, value = latencies
+	map <int, int> latencies;	// key = server, value = latencies
 	int data_center_latency;
 };
 
@@ -144,7 +144,7 @@ public:
 };
 
 int main() {
-	
+
 	vector<Video> videos;
 	Video v1, v2, v3, v4, v5;
 	v1.size = 50;
@@ -161,19 +161,46 @@ int main() {
 	cs1.storage = 100;
 	cs1.videos_stored.push_back(v1);
 
-	for (int i = 0; i < videos.size; i++) {
-		for (int j = 0; j < endpoints.size; j++) {
-			int numRequests;
-			map<int, int>::iterator it;
-			if((it = endpoints[j].video_requests.find(i)) != endpoints[j].video_requests.end())
+	for (int i = 0; i < videos.size(); i++) {
+		map<int, int> infoCache;		// Info for the comparison of caches.
+
+		for (int j = 0; j < caches.size(); j++) {
+			vector<int> endPVideoSum;
+			vector<int> endPRequests;
+
+			for (int k = 0; k < endpoints.size(); k++) {
+				map<int, int>::iterator it;
+				if ((it = endpoints[j].video_requests.find(i)) != endpoints[j].video_requests.end()) {
+					int numRequests = it->second;
+					int serverTime = numRequests * endpoints[k].data_center_latency;
+
+					map<int, int>::iterator itr;
+					if ((itr = endpoints[k].latencies.find(j)) != endpoints[k].latencies.end()) {
+						int serverLatency = itr->second;
+						int cacheTime = numRequests * serverLatency;
+
+						endPVideoSum.push_back(serverTime - cacheTime);
+						endPRequests.push_back(numRequests);
+					}
+				}
+			}
+
+			int sumLatencies = 0, sumRequests = 0;
+			for (int k = 0; k < endPVideoSum.size(); k++) {
+				sumLatencies += endPVideoSum[k];
+				sumRequests += endPRequests[k];
+			}
+
+			int w = sumLatencies / sumRequests;
+			infoCache.insert(pair<int, int>(j, w));
 		}
 	}
 
 
 
-	//getData(videos);
-	//cout << videos.size();
+		//getData(videos);
+		//cout << videos.size();
 
 
-	return 1;
-}
+		return 1;
+	}
