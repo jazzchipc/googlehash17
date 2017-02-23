@@ -108,54 +108,54 @@ bool getData(vector<Video *> &videos, vector<Endpoint *> &endpoints, CacheData *
 	}
 	return false;
 }
-/*
+
 int printCacheServerVideos(CacheServer server, ofstream& output)
 {
-for (size_t i = 0; i < server.videos_stored.size(); i++)
-{
-output << server.videos_stored[i].id;
+	for (size_t i = 0; i < server.videos_stored.size(); i++)
+	{
+		output << server.videos_stored[i].id;
 
-if (i < server.videos_stored.size() - 1)
-{
-output << " ";
-}
-}
+		if (i < server.videos_stored.size() - 1)
+		{
+			output << " ";
+		}
+	}
 }
 
 int outputResults(vector <CacheServer> cacheServers) {
 
-ofstream file;
-file.open("me_at_the_zoo.out");
+	ofstream file;
+	file.open("me_at_the_zoo.out");
 
-if (!file.is_open())
-{
-cout << "Could not open file for output.\n";
-return -1;
+	if (!file.is_open())
+	{
+		cout << "Could not open file for output.\n";
+		return -1;
+	}
+	else
+	{
+		int numOfServers = cacheServers.size();
+
+		file << numOfServers << "\n";
+
+		for (vector<CacheServer>::size_type i = 0; i != cacheServers.size(); i++) {
+			file << i << " ";
+
+			printCacheServerVideos(cacheServers[i], file);
+
+			// Adding new line except for last line
+			if (i < cacheServers.size() - 1)
+			{
+				file << "\n";
+			}
+		}
+
+	}
+
+	file.close();
+
+	return 0;
 }
-else
-{
-int numOfServers = cacheServers.size();
-
-file << numOfServers << "\n";
-
-for (vector<CacheServer>::size_type i = 0; i != cacheServers.size(); i++) {
-file << i << " ";
-
-printCacheServerVideos(cacheServers[i], file);
-
-// Adding new line except for last line
-if (i < cacheServers.size() - 1)
-{
-file << "\n";
-}
-}
-
-}
-
-file.close();
-
-return 0;
-}*/
 
 int main() {
 
