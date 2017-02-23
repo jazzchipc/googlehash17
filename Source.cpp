@@ -23,6 +23,7 @@ public:
 class CacheServer {
 public:
 	vector<Video> videos_stored; // videos stored on the server
+	int id;
 	int free_space;
 	int storage;
 };
@@ -75,7 +76,9 @@ bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 				int cacheServerIndex = atoi(info.substr(0, info.find(" ")).c_str());
 				info = info.substr(info.find(" ") + 1);
 				int cacheServerLatency = atoi(info.substr(0, info.find(" ")).c_str());
-				endpoint->latencies.insert(*(new pair<int, int>(cacheServerIndex, cacheServerLatency)));
+				CacheServer *cache = new CacheServer();
+				cache->id = cacheServerIndex;
+				endpoint->latencies.insert(*(new pair<CacheServer, int>(*cache, cacheServerLatency)));
 			}
 
 			endpoints.push_back(endpoint);
