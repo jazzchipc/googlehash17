@@ -21,7 +21,7 @@ public:
 	int free_space;
 };
 
-bool getData(vector<int> &videos, vector<Endpoint> &endpoints) {
+bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 	ifstream file;
 	file.open("me_at_the_zoo.in");
 	if (file.is_open()) {
@@ -50,9 +50,9 @@ bool getData(vector<int> &videos, vector<Endpoint> &endpoints) {
 		// Get endpoints data
 		for (int ep = 0; ep < i_endpoints; ep++) {
 			getline(file, info);
-			Endpoint endpoint;
+			Endpoint *endpoint = new Endpoint();
 
-			endpoint.data_center_latency = atoi(info.substr(0, info.find(" ")).c_str());
+			endpoint->data_center_latency = atoi(info.substr(0, info.find(" ")).c_str());
 			info = info.substr(info.find(" ") + 1);
 			int numCacheServers = atoi(info.substr(0, info.find(" ")).c_str());
 			
@@ -62,9 +62,9 @@ bool getData(vector<int> &videos, vector<Endpoint> &endpoints) {
 				int cacheServerIndex = atoi(info.substr(0, info.find(" ")).c_str());
 				info = info.substr(info.find(" ") + 1);
 				int cacheServerLatency = atoi(info.substr(0, info.find(" ")).c_str());
-				endpoint.latencies.insert(pair<int, int>(cacheServerIndex, cacheServerLatency));
+				endpoint->latencies.insert(*(new pair<int, int>(cacheServerIndex, cacheServerLatency)));
 			}
-
+			
 			endpoints.push_back(endpoint);
 		}
 
@@ -76,8 +76,9 @@ bool getData(vector<int> &videos, vector<Endpoint> &endpoints) {
 			int endpointIdx = atoi(info.substr(0, info.find(" ")).c_str());
 			info = info.substr(info.find(" ") + 1);
 			int numRequests = atoi(info.substr(0, info.find(" ")).c_str());
-			Endpoint endpoint = endpoints.at(endpointIdx);
-			endpoint.video_requests.insert(pair<int, int>(videoIdx, numRequests));
+			Endpoint *endpoint = endpoints.at(endpointIdx);
+			endpoint->video_requests.insert(*(new pair<int, int>(videoIdx, numRequests)));
+			//cout << endpointIdx << " " << videoIdx << " " << numRequests << endl;
 		}
 
 		file.close();
@@ -88,7 +89,9 @@ bool getData(vector<int> &videos, vector<Endpoint> &endpoints) {
 
 int main() {
 	vector<int> videos;
-	vector<Endpoint> endpoints;
+	vector<Endpoint *> endpoints;
 	getData(videos, endpoints);
+	cout << "--------" << endpoints.at(0)->video_requests.size();
+	
 	return 1;
 }
