@@ -104,7 +104,7 @@ int printCacheServerVideos(CacheServer server, ofstream& output)
 {
 	for (size_t i = 0; i < server.videos_stored.size(); i++)
 	{
-		output << server.videos_stored[i];
+		output << server.videos_stored[i].id;
 
 		if (i < server.videos_stored.size() - 1)
 		{
@@ -166,11 +166,12 @@ int main() {
 	cs1.storage = 100;
 	cs1.videos_stored.push_back(v1);
 
-	for (int i = 0; i < videos.size; i++) {
-		for (int j = 0; j < endpoints.size; j++) {
+	for (int i = 0; i < videos.size(); i++) {
+		for (int j = 0; j < endpoints.size(); j++) {
 			int numRequests;
 			map<int, int>::iterator it;
 			if((it = endpoints[j].video_requests.find(i)) != endpoints[j].video_requests.end())
+			{}
 		}
 	}
 
