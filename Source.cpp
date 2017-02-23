@@ -7,20 +7,6 @@
 
 using namespace std;
 
-
-class Endpoint {
-public:
-	map <int, int> video_requests;	// key = video, value = requests
-	map <int, int> latencies;	// key = server, value = latencies
-	int data_center_latency;
-};
-
-class CacheServer {
-public:
-	vector<int> videos_stored; // videos stored on the server
-	int free_space;
-};
-
 bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 	ifstream file;
 	file.open("me_at_the_zoo.in");
@@ -55,7 +41,7 @@ bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 			endpoint->data_center_latency = atoi(info.substr(0, info.find(" ")).c_str());
 			info = info.substr(info.find(" ") + 1);
 			int numCacheServers = atoi(info.substr(0, info.find(" ")).c_str());
-			
+
 			// Get latency for each cache server
 			for (int cs = 0; cs < numCacheServers; cs++) {
 				getline(file, info);
@@ -64,7 +50,7 @@ bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 				int cacheServerLatency = atoi(info.substr(0, info.find(" ")).c_str());
 				endpoint->latencies.insert(*(new pair<int, int>(cacheServerIndex, cacheServerLatency)));
 			}
-			
+
 			endpoints.push_back(endpoint);
 		}
 
@@ -89,23 +75,23 @@ bool getData(vector<int> &videos, vector<Endpoint *> &endpoints) {
 
 int printCacheServerVideos(CacheServer server, ofstream& output)
 {
-	for(size_t i = 0; i < server.videos_stored.size(); i++)
+	for (size_t i = 0; i < server.videos_stored.size(); i++)
 	{
 		output << server.videos_stored[i];
 
-		if(i < server.videos_stored.size() - 1)
+		if (i < server.videos_stored.size() - 1)
 		{
 			output << " ";
 		}
 	}
 }
 
-int outputResults(vector <CacheServer> cacheServers){
+int outputResults(vector <CacheServer> cacheServers) {
 
 	ofstream file;
 	file.open("me_at_the_zoo.out");
 
-	if(!file.is_open())
+	if (!file.is_open())
 	{
 		cout << "Could not open file for output.\n";
 		return -1;
@@ -116,17 +102,17 @@ int outputResults(vector <CacheServer> cacheServers){
 
 		file << numOfServers << "\n";
 
-		for(vector<CacheServer>::size_type i = 0; i != cacheServers.size(); i++) {
-    		file << i << " ";
+		for (vector<CacheServer>::size_type i = 0; i != cacheServers.size(); i++) {
+			file << i << " ";
 
 			printCacheServerVideos(cacheServers[i], file);
 
 			// Adding new line except for last line
-			if(i < cacheServers.size()-1)
+			if (i < cacheServers.size() - 1)
 			{
 				file << "\n";
 			}
-		}	
+		}
 
 	}
 
@@ -135,11 +121,59 @@ int outputResults(vector <CacheServer> cacheServers){
 	return 0;
 }
 
+class Endpoint {
+public:
+	map <int, int> video_requests;	// vector holding all of the requests. key = video (as index), value = requests
+	map <CacheServer, int> latencies;	// key = server, value = latencies
+	int data_center_latency;
+};
+
+class CacheServer {
+public:
+	vector<Video> videos_stored; // videos stored on the server
+	int free_space;
+	int storage;
+};
+
+class Video {
+public:
+	int size;
+	int currSavedTime = 0;
+	CacheServer* cs;
+	Endpoint* endP;
+};
+
 int main() {
-	vector<int> videos;
-	vector<Endpoint *> endpoints;
-	getData(videos, endpoints);
-	cout << "--------" << endpoints.at(0)->video_requests.size();
 	
+	vector<Video> videos;
+	Video v1, v2, v3, v4, v5;
+	v1.size = 50;
+
+	vector<Endpoint> endpoints;
+	Endpoint endP1, endP2, endP4;
+
+	endP1.video_requests.insert(pair<int, int>(3, 1500));
+	endP2.video_requests.insert(pair<int, int>(3, 2500));
+	endP4.video_requests.insert(pair<int, int>(3, 200));
+
+	vector<CacheServer> caches;
+	CacheServer cs1, cs2;
+	cs1.storage = 100;
+	cs1.videos_stored.push_back(v1);
+
+	for (int i = 0; i < videos.size; i++) {
+		for (int j = 0; j < endpoints.size; j++) {
+			int numRequests;
+			map<int, int>::iterator it;
+			if((it = endpoints[j].video_requests.find(i)) != endpoints[j].video_requests.end())
+		}
+	}
+
+
+
+	//getData(videos);
+	//cout << videos.size();
+
+
 	return 1;
 }
